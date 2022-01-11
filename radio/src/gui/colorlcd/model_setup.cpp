@@ -1620,12 +1620,14 @@ void ModelSetupPage::build(FormWindow * window)
   new CheckBox(window, grid.getFieldSlot(), GET_SET_INVERTED(g_model.noGlobalFunctions));
   grid.nextLine();
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   // Internal module
   {
     new Subtitle(window, grid.getLineSlot(), TR_INTERNALRF, 0, COLOR_THEME_PRIMARY1);
     grid.nextLine();
     grid.addWindow(new ModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, INTERNAL_MODULE));
   }
+#endif
 
   // External module
   {
