@@ -149,6 +149,7 @@ elseif(PCB STREQUAL X7)
     set(CPU_TYPE STM32F2)
     set(ROTARY_ENCODER YES)
     set(CPU_TYPE_FULL STM32F205xE)  # for size report
+    add_definitions(-DSTM32F205xx)
     set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
     set(LUA_EXPORT lua_export_tpro)
     add_definitions(-DFUNCTION_SWITCHES)
@@ -194,12 +195,13 @@ elseif(PCB STREQUAL X7)
     set(NAVIGATION_TYPE x7)
     set(CPU_TYPE STM32F4)
     set(CPU_TYPE_FULL STM32F407xE)  # for size report
+    add_definitions(-DSTM32F407xx)
     set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
     set(FIRMWARE_TARGET_SRC
       ${FIRMWARE_TARGET_SRC}
       startup_stm32f40_41xxx.s
       )
-    add_definitions(-DSTM32F40_41xxx)
+    add_definitions(-DSTM32F40_41xxx -DSTM32F407xx)
     set(ROTARY_ENCODER YES)
     set(LUA_EXPORT lua_export_zorro)
     set(BLUETOOTH NO)
