@@ -34,6 +34,8 @@ void auxSerialPutc(uint8_t c);
 void auxSerialSbusInit();
 void auxSerialStop();
 uint8_t auxSerialTracesEnabled();
+
+extern const etx_serial_driver_t AuxSerialDriver;
 #endif
 
 #if defined(AUX2_SERIAL)
@@ -47,5 +49,7 @@ void aux2SerialPutc(uint8_t c);
 void aux2SerialSbusInit();
 void aux2SerialStop();
 uint8_t aux2SerialTracesEnabled();
+
+extern const etx_serial_driver_t Aux2SerialDriver;
 #endif
 

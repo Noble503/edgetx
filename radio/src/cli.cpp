@@ -917,7 +917,7 @@ int cliSet(const char **argv)
 static void spInternalModuleTx(uint8_t* buf, uint32_t len)
 {
   while (len > 0) {
-    IntmoduleSerialDriver.sendByte(*(buf++));
+    IntmoduleSerialDriver.sendByte(nullptr, *(buf++));
     len--;
   }
 }
@@ -928,8 +928,6 @@ static const etx_serial_init spIntmoduleSerialInitParams = {
   .stop_bits = ETX_StopBits_One,
   .word_length = ETX_WordLength_8,
   .rx_enable = true,
-  .rx_dma_buf = nullptr,
-  .rx_dma_buf_len = 0,
   .on_receive = intmoduleFifoReceive,
   .on_error = intmoduleFifoError,
 };
@@ -1002,7 +1000,7 @@ int cliSerialPassthrough(const char **argv)
       etx_serial_init params(spIntmoduleSerialInitParams);
       params.baudrate = baudrate;
 
-      IntmoduleSerialDriver.init(&params);
+      void* uart_ctx = IntmoduleSerialDriver.init(&params);
 
       // backup and swap CLI input
       auto backupCB = cliReceiveCallBack;
@@ -1035,7 +1033,7 @@ int cliSerialPassthrough(const char **argv)
       cliReceiveCallBack = backupCB;
 
       // and stop module
-      IntmoduleSerialDriver.deinit();
+      IntmoduleSerialDriver.deinit(uart_ctx);
 
       // power off the module and wait for a bit
       INTERNAL_MODULE_OFF();

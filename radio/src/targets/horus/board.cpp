@@ -22,7 +22,13 @@
 #include "opentx.h"
 
 #include "hal/adc_driver.h"
+#include "hal/serial_driver.h"
+#include "hal/serial_port.h"
 #include "../common/arm/stm32/timers_driver.h"
+
+#if defined(AUX_SERIAL) || defined(AUX2_SERIAL)
+#include "../common/arm/stm32/aux_serial_driver.h"
+#endif
 
 #if !defined(PCBX12S)
   #include "../common/arm/stm32/stm32_hal_adc.h"
@@ -359,3 +365,27 @@ bool isBacklightEnabled()
     return true;
   return boardBacklightOn;
 }
+
+#if defined(AUX_SERIAL)
+const etx_serial_port_t auxSerialPort = {
+  &AuxSerialDriver,
+  nullptr
+};
+#endif
+
+#if defined(AUX2_SERIAL)
+const etx_serial_port_t aux2SerialPort = {
+  &Aux2SerialDriver,
+  nullptr
+};
+#endif
+
+const etx_serial_port_t* serialPorts[] = {
+#if defined(AUX_SERIAL)
+  &auxSerialPort,
+#endif
+#if defined(AUX2_SERIAL)
+  &aux2SerialPort,
+#endif
+  nullptr
+};

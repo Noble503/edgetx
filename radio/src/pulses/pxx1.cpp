@@ -231,17 +231,13 @@ static const etx_serial_init pxx1SerialInit = {
   .stop_bits = ETX_StopBits_One,
   .word_length = ETX_WordLength_8,
   .rx_enable = false,
-  .rx_dma_buf = nullptr,
-  .rx_dma_buf_len = 0,
   .on_receive = intmoduleFifoReceive,
   .on_error = intmoduleFifoError,
 };
 
 static void* pxx1InitInternal(uint8_t module)
 {
-  (void)module;
-
-  IntmoduleSerialDriver.init(&pxx1SerialInit);
+  void* uart_ctx = IntmoduleSerialDriver.init(&pxx1SerialInit);
 
 #if defined(INTMODULE_HEARTBEAT)
   init_intmodule_heartbeat();
@@ -249,19 +245,17 @@ static void* pxx1InitInternal(uint8_t module)
   mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
   INTERNAL_MODULE_ON();
 
-  return nullptr;
+  return uart_ctx;
 }
 
 static void pxx1DeInitInternal(void* context)
 {
-  (void)context;
-
   INTERNAL_MODULE_OFF();
   mixerSchedulerSetPeriod(INTERNAL_MODULE, 0);
 #if defined(INTMODULE_HEARTBEAT)
   stop_intmodule_heartbeat();
 #endif
-  IntmoduleSerialDriver.deinit();
+  IntmoduleSerialDriver.deinit(context);
 }
 
 static void pxx1SetupPulsesInternal(void* context, int16_t* channels, uint8_t nChannels)
@@ -276,8 +270,7 @@ static void pxx1SetupPulsesInternal(void* context, int16_t* channels, uint8_t nC
 
 static void pxx1SendPulsesInternal(void* context)
 {
-  (void)context;
-  IntmoduleSerialDriver.sendBuffer(intmodulePulsesData.pxx_uart.getData(),
+  IntmoduleSerialDriver.sendBuffer(context, intmodulePulsesData.pxx_uart.getData(),
                                    intmodulePulsesData.pxx_uart.getSize());
 }
 
