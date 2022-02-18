@@ -26,7 +26,11 @@
 #include "menus.h"
 #include "ff.h"
 
-#define READ_FILE_BY_LINE 0
+#if LCD_W >= 480
+  #define LCD_COLS                     40
+#else
+  #define LCD_COLS                     30
+#endif
 
 constexpr uint16_t TEXT_FILE_MAXSIZE = 20480;
 
@@ -53,15 +57,12 @@ class ViewTextWindow : public Page
     buildBody(&body);
   };
 
-#if READ_FILE_BY_LINE
-  bool sdReadTextLine(FIL* file, char lines[],
-                      const uint8_t lineLength = LCD_COLS); 
-#else
   void sdReadTextFileBlock(const char * filename, int& lines_count); 
   void loadFirstScreen(void);
- #if defined(HARDWARE_TOUCH)
-    bool onTouchSlide(coord_t x, coord_t y, coord_t startX, coord_t startY, coord_t slideX, coord_t slideY) override;
-#endif 
+#if defined(HARDWARE_TOUCH)
+  bool onTouchSlide(coord_t x, coord_t y, coord_t startX, coord_t startY,
+                    coord_t slideX, coord_t slideY) override;
+#endif
   void drawVerticalScrollbar(BitmapBuffer * dc);
 
   ~ViewTextWindow()
@@ -80,7 +81,7 @@ class ViewTextWindow : public Page
     Page::paint(dc);
     drawVerticalScrollbar(dc);
   }        
-#endif                           
+
   void checkEvents() override;
 
 #if defined(DEBUG_WINDOWS)
@@ -98,19 +99,16 @@ class ViewTextWindow : public Page
   uint16_t readCount;
   int longestLine;
 
-#if !READ_FILE_BY_LINE
-char** lines = nullptr;
-//char lines[15][80];
-int maxScreenLines;
-int maxLineLength;
-int textVerticalOffset;
-int readLinesCount;
-int lastLoadedLine;
-int maxPos;
-int maxLines;
-bool textBottom;
-bool isInSetup;
-#endif
+  char** lines = nullptr;
+  int maxScreenLines;
+  int maxLineLength;
+  int textVerticalOffset;
+  int readLinesCount;
+  int lastLoadedLine;
+  int maxPos;
+  int maxLines;
+  bool textBottom;
+  bool isInSetup;
 
   void extractNameSansExt(void);
   void buildBody(Window *window);
